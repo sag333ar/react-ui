@@ -15,6 +15,9 @@ export const AiohaModal = ({
   loginOptions,
   forceShowProviders = [],
   arrangement = 'list',
+  isViewExplorerVisible,
+  isSwitchUserVisible,
+  isLogoutVisible,
   onLogin,
   onClose
 }: ModalProps) => {
@@ -64,7 +67,13 @@ export const AiohaModal = ({
                 />
               )
             ) : (
-              <UserModal onClose={onClose} onSwitchUser={() => setSwitchingUser(true)} />
+              <UserModal
+                onClose={onClose}
+                onSwitchUser={() => setSwitchingUser(true)}
+                isLogoutVisible={isLogoutVisible}
+                isSwitchUserVisible={isSwitchUserVisible}
+                isViewExplorerVisible={isViewExplorerVisible}
+              />
             )
           ) : (
             <LoginModal
