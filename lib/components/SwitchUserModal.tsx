@@ -43,7 +43,14 @@ export const SwitchUserModal = ({ onClose, onSelect, onAddAcc }: SwitchUserModal
                 className="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                 onClick={() => onClickUser(user!)}
               >
-                <td className="px-5 py-4 whitespace-nowrap">
+                <td>
+                  <img
+                    src={`https://images.hive.blog/u/${user || 'null'}/avatar`}
+                    alt="User avatar"
+                    className="w-9 h-9 ml-2 rounded-full border border-gray-300 dark:border-gray-600"
+                  />
+                </td>
+                <td className="pr-5 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{user}</div>
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
@@ -54,7 +61,14 @@ export const SwitchUserModal = ({ onClose, onSelect, onAddAcc }: SwitchUserModal
             )}
             {Object.keys(otherUsers).map((u, i) => (
               <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer" onClick={() => onClickUser(u!)}>
-                <td className="px-5 py-4 whitespace-nowrap">
+                <td>
+                  <img
+                    src={`https://images.hive.blog/u/${u || 'null'}/avatar`}
+                    alt="User avatar"
+                    className="w-9 h-9 ml-2 rounded-full border border-gray-300 dark:border-gray-600"
+                  />
+                </td>
+                <td className="pr-5 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{u}</div>
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
