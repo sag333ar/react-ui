@@ -19,6 +19,7 @@ export interface LoginModalProps {
   onLogin?: (result: LoginResult) => any
   onCancel?: () => any
   onClose: Dispatch<SetStateAction<boolean>>
+  isAvatarVisible?: boolean
 }
 
 export const LoginModal = ({
@@ -29,7 +30,8 @@ export const LoginModal = ({
   forceShowProviders = [],
   onCancel,
   onClose,
-  onLogin
+  onLogin,
+  isAvatarVisible
 }: LoginModalProps) => {
   const { aioha } = useAioha()
   const [page, setPage] = useState(0)
@@ -102,6 +104,7 @@ export const LoginModal = ({
           />
         ) : page === 1 ? (
           <UsernameInput
+            isAvatarVisible={isAvatarVisible}
             onPrevious={() => {
               setError('')
               setPage(0)

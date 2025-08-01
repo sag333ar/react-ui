@@ -7,6 +7,7 @@ export interface UserModalProps {
   explorerUrl?: string
   onClose: Dispatch<SetStateAction<boolean>>
   onSwitchUser: () => any
+  onClickLogoutBtn?: () => any
   isViewExplorerVisible?: boolean
   isSwitchUserVisible?: boolean
   isLogoutVisible?: boolean
@@ -17,6 +18,7 @@ export const UserModal = ({
   explorerUrl = 'https://hivehub.dev',
   onClose,
   onSwitchUser,
+  onClickLogoutBtn,
   isViewExplorerVisible = true,
   isSwitchUserVisible = true,
   isLogoutVisible = true,
@@ -61,9 +63,13 @@ export const UserModal = ({
               type="button"
               className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-b-lg"
               onClick={async () => {
-                await aioha.logout()
-                onClose(false)
-                if (Object.keys(otherUsers).length > 0) onSwitchUser()
+                if (onClickLogoutBtn) {
+                  onClickLogoutBtn()
+                } else {
+                  await aioha.logout()
+                  onClose(false)
+                  if (Object.keys(otherUsers).length > 0) onSwitchUser()
+                }
               }}
             >
               Logout

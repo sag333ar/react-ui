@@ -18,8 +18,10 @@ export const AiohaModal = ({
   isViewExplorerVisible,
   isSwitchUserVisible,
   isLogoutVisible,
+  isAvatarVisible,
   onLogin,
-  onClose
+  onClose,
+  onClickLogoutBtn
 }: ModalProps) => {
   const { aioha, user, otherUsers } = useAioha()
   const isInactive = Object.keys(otherUsers).length > 0 && !aioha.isLoggedIn()
@@ -49,6 +51,7 @@ export const AiohaModal = ({
                     setSwitchingUser(false)
                   }}
                   onAddAcc={() => setAddingAcc(true)}
+                  isAvatarVisible = {isAvatarVisible}
                 />
               ) : (
                 <LoginModal
@@ -64,6 +67,7 @@ export const AiohaModal = ({
                   }}
                   onClose={onClose}
                   onCancel={() => setAddingAcc(false)}
+                  isAvatarVisible={isAvatarVisible}
                 />
               )
             ) : (
@@ -73,6 +77,7 @@ export const AiohaModal = ({
                 isLogoutVisible={isLogoutVisible}
                 isSwitchUserVisible={isSwitchUserVisible}
                 isViewExplorerVisible={isViewExplorerVisible}
+                onClickLogoutBtn={onClickLogoutBtn}
               />
             )
           ) : (
@@ -84,6 +89,7 @@ export const AiohaModal = ({
               forceShowProviders={forceShowProviders}
               onLogin={onLogin}
               onClose={onClose}
+              isAvatarVisible={isAvatarVisible}
             />
           )}
         </div>
