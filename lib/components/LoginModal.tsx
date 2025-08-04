@@ -10,6 +10,7 @@ import { CloseIcon } from '../icons/CloseIcon.js'
 import { AllProviders, ExtraProviders, ProviderInfo } from './ProviderInfo.js'
 import { AccountDiscovery } from './login/AccountDiscovery.js'
 import { PrivateKeyLogin } from './login/PrivateKeyLogin.js'
+import { PlaintextKeyProvider } from '@aioha/aioha/build/providers/custom/plaintext.js'
 
 export interface LoginModalProps {
   loginTitle?: string
@@ -50,22 +51,27 @@ export const LoginModal = ({
     }
   })
   const login = async (provider: AllProviders, username: string, options: LoginOptions) => {
-    const loginResult = await aioha.login(provider as Providers, username, {
-      ...options,
-      hiveauth: {
-        // TODO: remove after removing the callback function in next core release
-        cbWait: () => {}
-      }
-    })
-    if (!loginResult.success) {
-      setError(loginResult.error)
-      if (provider !== Providers.HiveSigner) setPage(0)
-    } else {
-      if (typeof onLogin === 'function') onLogin(loginResult)
-      onClose(false)
-    }
-    return loginResult
+  if (provider === Providers.Custom && options.key) {
+    aioha.registerCustomProvider(new PlaintextKeyProvider(options.key))
   }
+
+  const loginResult = await aioha.login(Providers.Custom, username, {
+    ...options,
+    hiveauth: {
+      cbWait: () => {}
+    }
+  });
+  console.log(loginResult);
+  if (!loginResult.success) {
+    setError(loginResult.error)
+    if (provider !== Providers.HiveSigner) setPage(0)
+  } else {
+    if (typeof onLogin === 'function') onLogin(loginResult)
+    onClose(false)
+  }
+
+  return loginResult
+}
   return (
     <>
       <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -134,7 +140,7 @@ export const LoginModal = ({
               setError('')
               setPage(0)
             }}
-            onNext={(username, key) => login(Providers.Custom, username, { ...loginOptions, key })}
+            onNext={(username, key) => login(Providers.Custom, username, { key })}
           />
         ) : null}
       </div>

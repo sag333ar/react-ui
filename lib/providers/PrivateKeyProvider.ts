@@ -9,13 +9,13 @@ class PrivateKeyProvider implements CustomProvider {
   };
   private key?: PrivateKey;
 
-  constructor(aioha: AiohaCore) {
+  constructor(aioha: AiohaCore, private rawKey: string) {
     this.aioha = aioha;
   }
 
-  async login(username: string, auth: KeyTypes, options: { key: string }): Promise<LoginResult> {
+  async login(username: string, auth: KeyTypes, options: any): Promise<LoginResult> {
     try {
-      this.key = PrivateKey.fromString(options.key);
+      this.key = PrivateKey.fromString(this.rawKey);
       const pubKey = this.key.createPublic().toString();
       const accounts = await this.aioha.hive.getAccounts([username]);
       if (!accounts.length) {
@@ -28,7 +28,7 @@ class PrivateKeyProvider implements CustomProvider {
         return { success: false, error: 'Incorrect private posting key', provider: Providers.Custom, errorCode: 401 };
       }
       return { success: true, provider: Providers.Custom, result: 'Logged in with private key', username, publicKey: pubKey };
-    } catch (e: any)_ {
+    } catch (e: any) {
       return { success: false, error: e.message, provider: Providers.Custom, errorCode: 500 };
     }
   }
