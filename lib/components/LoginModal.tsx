@@ -59,7 +59,7 @@ export const LoginModal = ({
     })
     if (!loginResult.success) {
       setError(loginResult.error)
-      if (provider !== Providers.HiveSigner) setPage(page)
+      if (provider !== Providers.HiveSigner) setPage(0)
     } else {
       if (typeof onLogin === 'function') onLogin(loginResult)
       onClose(false)
