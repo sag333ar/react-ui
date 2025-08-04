@@ -7,13 +7,21 @@ export interface UserModalProps {
   explorerUrl?: string
   onClose: Dispatch<SetStateAction<boolean>>
   onSwitchUser: () => any
+  onClickLogoutBtn?: () => any
+  isViewExplorerVisible?: boolean
+  isSwitchUserVisible?: boolean
+  isLogoutVisible?: boolean
 }
 
 export const UserModal = ({
   imageServer = 'https://images.hive.blog',
   explorerUrl = 'https://hivehub.dev',
   onClose,
-  onSwitchUser
+  onSwitchUser,
+  onClickLogoutBtn,
+  isViewExplorerVisible = true,
+  isSwitchUserVisible = true,
+  isLogoutVisible = true,
 }: UserModalProps) => {
   const { aioha, user, otherUsers } = useAioha()
   return (
@@ -32,31 +40,41 @@ export const UserModal = ({
           <h3 className="text-lg font-semibold my-2 text-gray-900 dark:text-white">{user}</h3>
         </div>
         <div className="flex flex-col rounded-md shadow-xs mx-auto w-full" role="group">
-          <button
-            type="button"
-            className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-t-lg"
-            onClick={() => window.open(`${explorerUrl}/@${user}`)}
-          >
-            View In Explorer
-          </button>
-          <button
-            type="button"
-            className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500"
-            onClick={onSwitchUser}
-          >
-            Switch User
-          </button>
-          <button
-            type="button"
-            className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-b-lg"
-            onClick={async () => {
-              await aioha.logout()
-              onClose(false)
-              if (Object.keys(otherUsers).length > 0) onSwitchUser()
-            }}
-          >
-            Logout
-          </button>
+          {isViewExplorerVisible && (
+            <button
+              type="button"
+              className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-t-lg"
+              onClick={() => window.open(`${explorerUrl}/@${user}`)}
+            >
+              View In Explorer
+            </button>
+          )}
+          {isSwitchUserVisible && (
+            <button
+              type="button"
+              className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500"
+              onClick={onSwitchUser}
+            >
+              Switch User
+            </button>
+          )}
+          {isLogoutVisible && (
+            <button
+              type="button"
+              className="flex-1 px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-gray-500 rounded-b-lg"
+              onClick={async () => {
+                if (onClickLogoutBtn) {
+                  onClickLogoutBtn()
+                } else {
+                  await aioha.logout()
+                  onClose(false)
+                  if (Object.keys(otherUsers).length > 0) onSwitchUser()
+                }
+              }}
+            >
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </>

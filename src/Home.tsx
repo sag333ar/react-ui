@@ -28,6 +28,15 @@ export const Home = () => {
         }}
         arrangement="grid"
         onClose={setAiohaModalDisplayed}
+        isViewExplorerVisible={true}
+        isSwitchUserVisible={true}
+        isLogoutVisible={true}
+        // onClickLogoutBtn={
+        //   () => {
+        //     console.log('Logout button clicked')
+        //   }
+        // }
+        isAvatarVisible={true}
       />
     </>
   )

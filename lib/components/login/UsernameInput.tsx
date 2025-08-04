@@ -5,9 +5,10 @@ import { SpinningIcon } from '../../icons/SpinningIcon.js'
 interface UsernameInputProps {
   onPrevious: () => any
   onNext: (username: string) => Promise<any>
+  isAvatarVisible?: boolean
 }
 
-export const UsernameInput = ({ onPrevious, onNext }: UsernameInputProps) => {
+export const UsernameInput = ({ onPrevious, onNext, isAvatarVisible=false }: UsernameInputProps) => {
   const [username, setUsername] = useState('')
   const [inProgress, setInProgress] = useState(false)
   const proceed = async () => {
@@ -21,6 +22,18 @@ export const UsernameInput = ({ onPrevious, onNext }: UsernameInputProps) => {
         <BackButton onPrevious={onPrevious} />
       </div>
       <div className="inline-flex flex-row gap-1.5 w-full">
+        {isAvatarVisible && (
+          <img
+            src={`https://images.hive.blog/u/${username || 'null'}/avatar`}
+            alt="User avatar"
+            className="w-9 h-9 rounded-full border border-gray-300 dark:border-gray-600"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.onerror = null // prevent infinite loop
+              target.src = 'https://images.hive.blog/u/null/avatar'
+            }}
+          />
+        )}
         <input
           type="text"
           id="small-input"
