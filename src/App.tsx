@@ -1,8 +1,9 @@
 import React from 'react'
 import { HiveSignerCb } from '../lib'
-import { initAioha } from '@aioha/aioha'
+import { initAioha, Providers } from '@aioha/aioha'
 import { AiohaProvider, HiveSignerOcl } from '../lib'
 import { Home } from './Home'
+import PrivateKeyProvider from '../lib/providers/PrivateKeyProvider'
 
 const aioha = initAioha({
   hivesigner: {
@@ -14,6 +15,8 @@ const aioha = initAioha({
     name: 'Aioha React'
   }
 })
+
+aioha.registerProvider(Providers.Custom, new PrivateKeyProvider(aioha))
 
 export const App = () => {
   if (window.location.pathname === '/hivesigner')

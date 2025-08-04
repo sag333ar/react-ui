@@ -6,9 +6,17 @@ import HiveAuthIconDark from '../icons/hiveauth-dark.svg'
 import HiveSignerIcon from '../icons/hivesigner.svg'
 import LedgerIcon from '../icons/ledger-light.svg'
 import LedgerIconDark from '../icons/ledger-dark.svg'
+import PrivateKeyIcon from '../icons/privatekey.svg'
+
+// Add a new enum for the private key provider
+export enum ExtraProviders {
+  PrivateKey = 'privatekey'
+}
+
+export type AllProviders = Providers | ExtraProviders
 
 export const ProviderInfo: {
-  [provider in Providers]: {
+  [provider in AllProviders]: {
     name: string
     icon: string
     iconDark?: string
@@ -42,6 +50,10 @@ export const ProviderInfo: {
     icon: LedgerIcon,
     iconDark: LedgerIconDark,
     discovery: true
+  },
+  [ExtraProviders.PrivateKey]: {
+    name: 'Private Key',
+    icon: PrivateKeyIcon
   },
   [Providers.Custom]: {
     name: 'Other Wallet',

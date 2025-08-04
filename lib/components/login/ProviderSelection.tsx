@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react'
 import { Providers } from '@aioha/aioha'
 import { useAioha } from '@aioha/react-provider'
-import { ProviderInfo } from '../ProviderInfo.js'
+import { AllProviders, ExtraProviders, ProviderInfo } from '../ProviderInfo.js'
 import { CloseIcon } from '../../icons/CloseIcon.js'
 
-type ProviderCb = (provider: Providers) => any
+type ProviderCb = (provider: AllProviders) => any
 export type Arrangement = 'list' | 'grid'
 
 export const Badge = ({ children }: { children?: ReactNode }) => {
@@ -15,10 +15,11 @@ export const Badge = ({ children }: { children?: ReactNode }) => {
   )
 }
 
-const ProviderBtn = ({ provider, forceShow, onClick }: { provider: Providers; forceShow: boolean; onClick: ProviderCb }) => {
+const ProviderBtn = ({ provider, forceShow, onClick }: { provider: AllProviders; forceShow: boolean; onClick: ProviderCb }) => {
   const { aioha } = useAioha()
   const { name, icon, iconDark, loginBadge } = ProviderInfo[provider]
-  return aioha.isProviderEnabled(provider) || (forceShow && aioha.isProviderRegistered(provider)) ? (
+  const isEnabled = provider === ExtraProviders.PrivateKey ? true : aioha.isProviderEnabled(provider as Providers)
+  return isEnabled || (forceShow && aioha.isProviderRegistered(provider as Providers)) ? (
     <li>
       <a
         className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
@@ -35,10 +36,19 @@ const ProviderBtn = ({ provider, forceShow, onClick }: { provider: Providers; fo
   ) : null
 }
 
-const ProviderBtnGrid = ({ provider, forceShow, onClick }: { provider: Providers; forceShow: boolean; onClick: ProviderCb }) => {
+const ProviderBtnGrid = ({
+  provider,
+  forceShow,
+  onClick
+}: {
+  provider: AllProviders
+  forceShow: boolean
+  onClick: ProviderCb
+}) => {
   const { aioha } = useAioha()
   const { name, icon, iconDark } = ProviderInfo[provider]
-  return aioha.isProviderEnabled(provider) || (forceShow && aioha.isProviderRegistered(provider)) ? (
+  const isEnabled = provider === ExtraProviders.PrivateKey ? true : aioha.isProviderEnabled(provider as Providers)
+  return isEnabled || (forceShow && aioha.isProviderRegistered(provider as Providers)) ? (
     <a
       className="flex flex-col items-center w-34 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
       onClick={() => onClick(provider)}
@@ -52,12 +62,13 @@ const ProviderBtnGrid = ({ provider, forceShow, onClick }: { provider: Providers
   ) : null
 }
 
-const ProvidersSeq: Providers[] = [
+const ProvidersSeq: AllProviders[] = [
   Providers.Keychain,
   Providers.PeakVault,
   Providers.HiveAuth,
   Providers.HiveSigner,
-  Providers.Ledger
+  Providers.Ledger,
+  ExtraProviders.PrivateKey
 ] // in this particular order
 
 export const ProviderSelection = ({
@@ -68,7 +79,7 @@ export const ProviderSelection = ({
   onCancel
 }: {
   helpUrl?: string
-  forceShow: Providers[]
+  forceShow: AllProviders[]
   onSelected: ProviderCb
   arrangement: Arrangement
   onCancel?: () => any

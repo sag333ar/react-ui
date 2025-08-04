@@ -7,15 +7,16 @@ import { useAioha } from '@aioha/react-provider'
 import { HiveAuthQR } from './login/HiveAuthQR.js'
 import { ErrorAlert } from './login/ErrorAlert.js'
 import { CloseIcon } from '../icons/CloseIcon.js'
-import { ProviderInfo } from './ProviderInfo.js'
+import { AllProviders, ExtraProviders, ProviderInfo } from './ProviderInfo.js'
 import { AccountDiscovery } from './login/AccountDiscovery.js'
+import { PrivateKeyLogin } from './login/PrivateKeyLogin.js'
 
 export interface LoginModalProps {
   loginTitle?: string
   loginHelpUrl?: string
   loginOptions: LoginOptions
   arrangement?: Arrangement
-  forceShowProviders?: Providers[]
+  forceShowProviders?: AllProviders[]
   onLogin?: (result: LoginResult) => any
   onCancel?: () => any
   onClose: Dispatch<SetStateAction<boolean>>
@@ -35,7 +36,7 @@ export const LoginModal = ({
 }: LoginModalProps) => {
   const { aioha } = useAioha()
   const [page, setPage] = useState(0)
-  const [chosenProvider, setProvider] = useState<Providers>()
+  const [chosenProvider, setProvider] = useState<AllProviders>()
   const [error, setError] = useState('')
   const [hiveAuthPl, setHiveAuthPl] = useState<{ payload: string; cancel: () => void }>()
   useEffect(() => {
@@ -48,8 +49,8 @@ export const LoginModal = ({
       aioha.off('hiveauth_login_request')
     }
   })
-  const login = async (provider: Providers, username: string, options: LoginOptions) => {
-    const loginResult = await aioha.login(provider, username, {
+  const login = async (provider: AllProviders, username: string, options: LoginOptions) => {
+    const loginResult = await aioha.login(provider as Providers, username, {
       ...options,
       hiveauth: {
         // TODO: remove after removing the callback function in next core release
@@ -58,7 +59,7 @@ export const LoginModal = ({
     })
     if (!loginResult.success) {
       setError(loginResult.error)
-      if (provider !== Providers.HiveSigner) setPage(1)
+      if (provider !== Providers.HiveSigner) setPage(page)
     } else {
       if (typeof onLogin === 'function') onLogin(loginResult)
       onClose(false)
@@ -86,6 +87,12 @@ export const LoginModal = ({
             arrangement={arrangement}
             onCancel={onCancel}
             onSelected={async (provider) => {
+              if (provider === ExtraProviders.PrivateKey) {
+                setProvider(provider)
+                setError('')
+                setPage(4)
+                return
+              }
               if (!aioha.isProviderEnabled(provider)) {
                 if (ProviderInfo[provider].url) window.open(ProviderInfo[provider].url, '_blank', 'noopener,noreferrer')
                 return
@@ -109,15 +116,25 @@ export const LoginModal = ({
               setError('')
               setPage(0)
             }}
-            onNext={(username) => login(chosenProvider!, username, loginOptions)}
+            onNext={(username) => login(chosenProvider as Providers, username, loginOptions)}
           />
         ) : page === 2 ? (
           <HiveAuthQR payload={hiveAuthPl!.payload} cancel={hiveAuthPl!.cancel} />
         ) : page === 3 ? (
           <AccountDiscovery
-            provider={chosenProvider!}
+            provider={chosenProvider as Providers}
             onPrevious={() => setPage(0)}
-            onNext={(username, info) => login(chosenProvider!, username, { ...loginOptions, paths: info.map((v) => v.path) })}
+            onNext={(username, info) =>
+              login(chosenProvider as Providers, username, { ...loginOptions, paths: info.map((v) => v.path) })
+            }
+          />
+        ) : page === 4 ? (
+          <PrivateKeyLogin
+            onPrevious={() => {
+              setError('')
+              setPage(0)
+            }}
+            onNext={(username, key) => login(Providers.Custom, username, { ...loginOptions, key })}
           />
         ) : null}
       </div>
