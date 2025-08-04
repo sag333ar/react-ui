@@ -16,7 +16,7 @@ const aioha = initAioha({
   }
 })
 
-aioha.registerProvider(Providers.Custom, new PrivateKeyProvider(aioha))
+aioha.registerCustomProvider(new PrivateKeyProvider(aioha))
 
 export const App = () => {
   if (window.location.pathname === '/hivesigner')
