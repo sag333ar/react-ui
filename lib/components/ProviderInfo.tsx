@@ -45,7 +45,7 @@ export const ProviderInfo: {
     discovery: true
   },
   [Providers.Custom]: {
-    name: 'Private Posting Key',
+    name: 'Private Key',
     icon: PrivateKeyIcon,
     loginBadge: 'Popular',
     iconDark: PrivateKeyIcon

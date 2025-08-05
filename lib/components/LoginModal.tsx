@@ -11,6 +11,9 @@ import { ProviderInfo } from './ProviderInfo.js'
 import { AccountDiscovery } from './login/AccountDiscovery.js'
 import { PrivateKeyLogin } from './login/PrivateKeyLogin.js'
 import { PlaintextKeyProvider } from '@aioha/aioha/build/providers/custom/plaintext.js'
+import * as dhive from '@hiveio/dhive'
+
+const client = new dhive.Client(['https://api.hive.blog'])
 
 export interface LoginModalProps {
   loginTitle?: string
@@ -69,20 +72,51 @@ export const LoginModal = ({
   }
 
   const postingKeylogin = async (username: string, key: string, options: LoginOptions, provider: Providers) => {
-    const plaintext = new PlaintextKeyProvider(key)
-    if (!aioha.isProviderRegistered(Providers.Custom)) {
-      aioha.registerCustomProvider(plaintext)
+    try {
+      const privateKeyObj = dhive.PrivateKey.fromString(key)
+      const publicKey = privateKeyObj.createPublic().toString()
+
+      const account = await client.database.getAccounts([username])
+      if (account.length === 0) {
+        setError(`Account not found: ${username}`)
+        return { success: false, error: `Account ${username} not found.` }
+      }
+
+      const accountData = account[0]
+      const postingKeys = accountData.posting.key_auths.map((item: any) => item[0])
+      if (!postingKeys.includes(publicKey)) {
+        setError(`Either username or private key entered is incorrect`)
+        return { success: false, error: 'Posting key mismatch' }
+      }
+
+      // Register the custom provider with the validated private key
+      const plaintextProvider = new PlaintextKeyProvider(key)
+      if (!aioha.isProviderRegistered(Providers.Custom)) {
+        aioha.registerCustomProvider(plaintextProvider)
+      }
+      
+      const loginResult = await aioha.login(provider, username, options.msg ? { msg: options.msg } : {})
+
+      if (!loginResult.success) {
+        setError(loginResult.error)
+        if (provider !== Providers.Custom) setPage(1)
+      } else {
+        plaintextProvider.loadAuth(username)
+        if (typeof onLogin === 'function') onLogin(loginResult)
+        onClose(false)
+      }
+
+      return loginResult
+    } catch (err) {
+      let errorMsg = 'Unknown error'
+      if (err instanceof Error) {
+        errorMsg = err.message
+      } else if (typeof err === 'string') {
+        errorMsg = err
+      }
+      setError('Invalid private key or network error')
+      return { success: false, error: errorMsg }
     }
-    const loginResult = await aioha.login(provider, username, options.msg ? { msg: options.msg } : {})
-    if (!loginResult.success) {
-      setError(loginResult.error)
-      if (provider !== Providers.Custom) setPage(1)
-    } else {
-      plaintext.loadAuth(username)
-      if (typeof onLogin === 'function') onLogin(loginResult)
-      onClose(false)
-    }
-    return loginResult
   }
 
   return (
