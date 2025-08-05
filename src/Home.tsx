@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useAioha, AiohaModal } from '../lib'
 import { KeyTypes } from '@aioha/aioha'
 import { ChainIcon } from './Icons'
+import { Providers } from '@aioha/aioha'
+
 
 export const Home = () => {
   const [aiohaModalDisplayed, setAiohaModalDisplayed] = useState(false)
@@ -37,6 +39,7 @@ export const Home = () => {
         //   }
         // }
         isAvatarVisible={true}
+        forceShowProviders={[Providers.Custom]}
       />
     </>
   )

@@ -9,6 +9,8 @@ import { ErrorAlert } from './login/ErrorAlert.js'
 import { CloseIcon } from '../icons/CloseIcon.js'
 import { ProviderInfo } from './ProviderInfo.js'
 import { AccountDiscovery } from './login/AccountDiscovery.js'
+import { PrivateKeyLogin } from './login/PrivateKeyLogin.js'
+import { PlaintextKeyProvider } from '@aioha/aioha/build/providers/custom/plaintext.js'
 
 export interface LoginModalProps {
   loginTitle?: string
@@ -65,6 +67,24 @@ export const LoginModal = ({
     }
     return loginResult
   }
+
+  const postingKeylogin = async (username: string, key: string, options: LoginOptions, provider: Providers) => {
+    const plaintext = new PlaintextKeyProvider(key)
+    if (!aioha.isProviderRegistered(Providers.Custom)) {
+      aioha.registerCustomProvider(plaintext)
+    }
+    const loginResult = await aioha.login(provider, username, options.msg ? { msg: options.msg } : {})
+    if (!loginResult.success) {
+      setError(loginResult.error)
+      if (provider !== Providers.Custom) setPage(1)
+    } else {
+      plaintext.loadAuth(username)
+      if (typeof onLogin === 'function') onLogin(loginResult)
+      onClose(false)
+    }
+    return loginResult
+  }
+
   return (
     <>
       <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -86,6 +106,12 @@ export const LoginModal = ({
             arrangement={arrangement}
             onCancel={onCancel}
             onSelected={async (provider) => {
+              if (provider === Providers.Custom) {
+                setProvider(provider)
+                setError('')
+                setPage(4)
+                return
+              }
               if (!aioha.isProviderEnabled(provider)) {
                 if (ProviderInfo[provider].url) window.open(ProviderInfo[provider].url, '_blank', 'noopener,noreferrer')
                 return
@@ -118,6 +144,14 @@ export const LoginModal = ({
             provider={chosenProvider!}
             onPrevious={() => setPage(0)}
             onNext={(username, info) => login(chosenProvider!, username, { ...loginOptions, paths: info.map((v) => v.path) })}
+          />
+        ) : page === 4 ? (
+          <PrivateKeyLogin
+            onPrevious={() => {
+              setError('')
+              setPage(0)
+            }}
+            onNext={(username, key) => postingKeylogin(username, key, loginOptions, chosenProvider!)}
           />
         ) : null}
       </div>
