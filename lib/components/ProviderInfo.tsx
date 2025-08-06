@@ -46,8 +46,6 @@ export const ProviderInfo: {
   },
   [Providers.Custom]: {
     name: 'Private Key',
-    icon: PrivateKeyIcon,
-    loginBadge: 'Popular',
-    iconDark: PrivateKeyIcon
+    icon: PrivateKeyIcon
   }
 }
