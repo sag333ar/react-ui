@@ -1,6 +1,6 @@
 {
   "name": "hivereactkit",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Ready-made React modal for Aioha & Ready-made React components for Hive UX",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
