@@ -19,7 +19,8 @@ const ProviderBtn = ({ provider, forceShow, onClick }: { provider: Providers; fo
   const { aioha } = useAioha()
   const { name, icon, iconDark, loginBadge } = ProviderInfo[provider]
   const isEnabled = provider === Providers.Custom ? true : aioha.isProviderEnabled(provider)
-  return isEnabled || (forceShow && aioha.isProviderRegistered(provider)) ? (
+  const isRegistered = provider === Providers.Custom ? true : aioha.isProviderRegistered(provider)
+  return isEnabled || (forceShow && isRegistered) ? (
     <li>
       <a
         className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
@@ -40,7 +41,8 @@ const ProviderBtnGrid = ({ provider, forceShow, onClick }: { provider: Providers
   const { aioha } = useAioha()
   const { name, icon, iconDark } = ProviderInfo[provider]
   const isEnabled = provider === Providers.Custom ? true : aioha.isProviderEnabled(provider)
-  return isEnabled || (forceShow && aioha.isProviderRegistered(provider)) ? (
+  const isRegistered = provider === Providers.Custom ? true : aioha.isProviderRegistered(provider)
+  return isEnabled || (forceShow && isRegistered) ? (
     <a
       className="flex flex-col items-center w-34 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow-sm hover:cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
       onClick={() => onClick(provider)}

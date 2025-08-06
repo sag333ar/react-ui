@@ -39,7 +39,7 @@ export const Home = () => {
         //   }
         // }
         isAvatarVisible={true}
-        forceShowProviders={[Providers.Custom]}
+        // forceShowProviders={[Providers.Custom]}
       />
     </>
   )
