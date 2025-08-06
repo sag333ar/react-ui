@@ -1,5 +1,5 @@
 {
-  "name": "@sagarkothari88/hivereactkit",
+  "name": "hivereactkit",
   "version": "1.7.0",
   "description": "Ready-made React modal for Aioha & Ready-made React components for Hive UX",
   "main": "dist/index.js",
