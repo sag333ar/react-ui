@@ -6,6 +6,7 @@ import HiveAuthIconDark from '../icons/hiveauth-dark.svg'
 import HiveSignerIcon from '../icons/hivesigner.svg'
 import LedgerIcon from '../icons/ledger-light.svg'
 import LedgerIconDark from '../icons/ledger-dark.svg'
+import PrivateKeyIcon from '../icons/privatekey.png'
 
 export const ProviderInfo: {
   [provider in Providers]: {
@@ -44,7 +45,9 @@ export const ProviderInfo: {
     discovery: true
   },
   [Providers.Custom]: {
-    name: 'Other Wallet',
-    icon: ''
+    name: 'Private Key',
+    icon: PrivateKeyIcon,
+    loginBadge: 'Popular',
+    iconDark: PrivateKeyIcon
   }
 }
