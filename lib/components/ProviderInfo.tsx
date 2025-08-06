@@ -6,7 +6,7 @@ import HiveAuthIconDark from '../icons/hiveauth-dark.svg'
 import HiveSignerIcon from '../icons/hivesigner.svg'
 import LedgerIcon from '../icons/ledger-light.svg'
 import LedgerIconDark from '../icons/ledger-dark.svg'
-import PrivateKeyIcon from '../icons/privatekey.png'
+import PrivateKeyIcon from '../icons/privatekey.svg'
 
 export const ProviderInfo: {
   [provider in Providers]: {
