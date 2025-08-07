@@ -201,6 +201,7 @@ export const LoginModal = ({
           />
         ) : page === 4 ? (
           <PrivateKeyLogin
+            isAvatarVisible={isAvatarVisible}
             onPrevious={() => {
               setError('')
               setPage(0)
