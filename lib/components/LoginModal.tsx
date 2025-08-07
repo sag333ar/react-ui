@@ -15,13 +15,23 @@ import * as dhive from '@hiveio/dhive'
 
 const client = new dhive.Client(['https://api.hive.blog'])
 
+export interface KeyLoginResultSuccess {
+    success: boolean;
+    key: string;
+    provider: Providers;
+    result: string;
+    username: string;
+    publicKey?: string;
+}
+
 export interface LoginModalProps {
   loginTitle?: string
   loginHelpUrl?: string
   loginOptions: LoginOptions
   arrangement?: Arrangement
   forceShowProviders?: Providers[]
-  onLogin?: (result: LoginResult) => any
+  onLogin?: (result: LoginResult) => any,
+  onKeyBasedLogin?: (result: KeyLoginResultSuccess) => any,
   onCancel?: () => any
   onClose: Dispatch<SetStateAction<boolean>>
   isAvatarVisible?: boolean
@@ -36,7 +46,8 @@ export const LoginModal = ({
   onCancel,
   onClose,
   onLogin,
-  isAvatarVisible
+  onKeyBasedLogin,
+  isAvatarVisible,
 }: LoginModalProps) => {
   const { aioha } = useAioha()
   const [page, setPage] = useState(0)
@@ -102,7 +113,16 @@ export const LoginModal = ({
         if (provider !== Providers.Custom) setPage(1)
       } else {
         plaintextProvider.loadAuth(username)
-        if (typeof onLogin === 'function') onLogin(loginResult)
+        if (typeof onKeyBasedLogin === 'function') {
+          onKeyBasedLogin({
+            key: key,
+            provider: loginResult.provider,
+            result: loginResult.result,
+            success: loginResult.success,
+            username: loginResult.username,
+            publicKey: loginResult.publicKey
+          })
+        }
         onClose(false)
       }
 
@@ -181,6 +201,7 @@ export const LoginModal = ({
           />
         ) : page === 4 ? (
           <PrivateKeyLogin
+            isAvatarVisible={isAvatarVisible}
             onPrevious={() => {
               setError('')
               setPage(0)

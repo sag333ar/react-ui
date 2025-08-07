@@ -21,7 +21,7 @@ export const UsernameInput = ({ onPrevious, onNext, isAvatarVisible=false }: Use
       <div className="mb-3">
         <BackButton onPrevious={onPrevious} />
       </div>
-      <div className="inline-flex flex-row gap-1.5 w-full">
+      <div className="inline-flex flex-row gap-1.5 w-full items-center">
         {isAvatarVisible && (
           <img
             src={`https://images.hive.blog/u/${username || 'null'}/avatar`}

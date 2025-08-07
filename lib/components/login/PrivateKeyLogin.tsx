@@ -3,11 +3,12 @@ import { BackButton } from './BackButton';
 import { SpinningIcon } from '../../icons/SpinningIcon';
 
 interface PrivateKeyLoginProps {
+  isAvatarVisible?: boolean;
   onPrevious: () => any;
   onNext: (username: string, key: string) => Promise<any>;
 }
 
-export const PrivateKeyLogin = ({ onPrevious, onNext }: PrivateKeyLoginProps) => {
+export const PrivateKeyLogin = ({ isAvatarVisible = false, onPrevious, onNext }: PrivateKeyLoginProps) => {
   const [username, setUsername] = useState('');
   const [key, setKey] = useState('');
   const [inProgress, setInProgress] = useState(false);
@@ -24,15 +25,29 @@ export const PrivateKeyLogin = ({ onPrevious, onNext }: PrivateKeyLoginProps) =>
         <BackButton onPrevious={onPrevious} />
       </div>
       <div className="space-y-4">
-        <input
-          type="text"
-          className="bg-gray-50 border border-gray-300 text-gray-900 h-auto text-sm rounded-lg focus:outline-none focus:border-gray-900 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white"
-          placeholder="Enter Hive Username"
-          autoCapitalize="off"
-          value={username}
-          onChange={(evt) => setUsername(evt.target.value)}
-          disabled={inProgress}
-        />
+        <div className="inline-flex flex-row gap-1.5 w-full items-center">
+          {isAvatarVisible && (
+            <img
+              src={`https://images.hive.blog/u/${username || 'null'}/avatar`}
+              alt="User avatar"
+              className="w-9 h-9 rounded-full border border-gray-300 dark:border-gray-600"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.onerror = null
+                target.src = 'https://images.hive.blog/u/null/avatar'
+              }}
+            />
+          )}
+          <input
+            type="text"
+            className="bg-gray-50 border border-gray-300 text-gray-900 h-auto text-sm rounded-lg focus:outline-none focus:border-gray-900 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white"
+            placeholder="Enter Hive Username"
+            autoCapitalize="off"
+            value={username}
+            onChange={(evt) => setUsername(evt.target.value)}
+            disabled={inProgress}
+          />
+        </div>
         <input
           type="password"
           className="bg-gray-50 border border-gray-300 text-gray-900 h-auto text-sm rounded-lg focus:outline-none focus:border-gray-900 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white"

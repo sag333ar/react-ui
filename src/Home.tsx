@@ -33,13 +33,13 @@ export const Home = () => {
         isViewExplorerVisible={true}
         isSwitchUserVisible={true}
         isLogoutVisible={true}
-        // onClickLogoutBtn={
-        //   () => {
-        //     console.log('Logout button clicked')
-        //   }
-        // }
+        onLogin={(result) => {
+          console.log('Login', result);
+        }}
+        onKeyBasedLogin={(result) => {
+          console.log("Key based login", result);
+        }}
         isAvatarVisible={true}
-        // forceShowProviders={[Providers.Custom]}
       />
     </>
   )

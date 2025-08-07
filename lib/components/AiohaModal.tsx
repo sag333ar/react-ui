@@ -20,6 +20,7 @@ export const AiohaModal = ({
   isLogoutVisible,
   isAvatarVisible,
   onLogin,
+  onKeyBasedLogin,
   onClose,
   onClickLogoutBtn
 }: ModalProps) => {
@@ -65,6 +66,11 @@ export const AiohaModal = ({
                     setSwitchingUser(false)
                     if (typeof onLogin === 'function') onLogin(r)
                   }}
+                  onKeyBasedLogin={(r) => {
+                    setAddingAcc(false)
+                    setSwitchingUser(false)
+                    if (typeof onKeyBasedLogin === 'function') onKeyBasedLogin(r)
+                  }}
                   onClose={onClose}
                   onCancel={() => setAddingAcc(false)}
                   isAvatarVisible={isAvatarVisible}
@@ -88,6 +94,7 @@ export const AiohaModal = ({
               arrangement={arrangement}
               forceShowProviders={forceShowProviders}
               onLogin={onLogin}
+              onKeyBasedLogin={onKeyBasedLogin}
               onClose={onClose}
               isAvatarVisible={isAvatarVisible}
             />
