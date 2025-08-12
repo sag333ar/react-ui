@@ -102,10 +102,7 @@ export const LoginModal = ({
 
       // Register the custom provider with the validated private key
       const plaintextProvider = new PlaintextKeyProvider(key)
-      if (!aioha.isProviderRegistered(Providers.Custom)) {
-        aioha.registerCustomProvider(plaintextProvider)
-      }
-      
+        aioha.registerCustomProvider(plaintextProvider);
       const loginResult = await aioha.login(provider, username, options.msg ? { msg: options.msg } : {})
 
       if (!loginResult.success) {
